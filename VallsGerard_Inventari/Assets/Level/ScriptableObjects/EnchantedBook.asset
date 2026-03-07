@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfad1e07e3118ad478d4e13d760d87b9, type: 3}
+  m_Name: EnchantedBook
+  m_EditorClassIdentifier: 
+  ItemID: b0d09dda-220e-4227-b70d-dbf492b6478f
+  ItemName: EnchantedBook
+  ItemSprite: {fileID: 21300000, guid: 70a0b656c98c291479b036dcc5bfe0ab, type: 3}
