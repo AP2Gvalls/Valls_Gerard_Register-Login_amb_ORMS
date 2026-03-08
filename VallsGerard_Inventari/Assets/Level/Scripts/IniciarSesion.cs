@@ -6,92 +6,73 @@ using TMPro;
 
 public class IniciarSesion : MonoBehaviour
 {
-    #region Components
-    [Header("UI")]
+    #region Inspector
+    [Header("UI Login")]
     public TMP_InputField inputUsuario;
     public TMP_InputField inputContraseña;
     public Button botonLogin;
     public TextMeshProUGUI mensaje;
 
-    [Header("Base de datos")]
-    public string nombreDB = "MyDatabase.sqlite"; 
-    private string rutaDB;
-
-    [Header("Objetos a controlar")]
-    public GameObject canvasLogin;   
+    [Header("Objectes a controlar")]
+    public GameObject canvasLogin;
     public GameObject canvasPrincipal;
 
     [Header("Refs")]
     public InventoryManager inventoryManager;
     #endregion
 
-
+    // ── Lifecycle ────────────────────────────────────────────────────────────
     void Start()
     {
-        rutaDB = Application.persistentDataPath + "/" + nombreDB;
-
         botonLogin.onClick.AddListener(CheckLogin);
-        mensaje.text = "insert user & Password";
+        mensaje.text = "Introdueix usuari i contrasenya";
 
-        if (inventoryManager == null) //comprobem q existeixi
-        {
+        if (inventoryManager == null)
             inventoryManager = FindObjectOfType<InventoryManager>();
-        }
     }
 
+    // ── Login amb ORM ────────────────────────────────────────────────────────
     void CheckLogin()
     {
-        string usuario = inputUsuario.text.Trim();
-        string contraseña = inputContraseña.text.Trim();
+        string usuari = inputUsuario.text.Trim();
+        string contrasenya = inputContraseña.text.Trim();
 
-        if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contraseña))
+        if (string.IsNullOrEmpty(usuari) || string.IsNullOrEmpty(contrasenya))
         {
-            mensaje.text = "usuari i/o Contraseña buits";
+            mensaje.text = "Usuari i/o contrasenya buits.";
             return;
         }
 
-        string dbUri = "URI=file:" + rutaDB;
+        if (DBContent.Instance == null)
+        {
+            mensaje.text = "Error: no hi ha DBContext a l'escena.";
+            return;
+        }
 
         try
         {
-            using (var conexion = new SqliteConnection(dbUri))
+            UsuariORM usuariTrobat = UsuariORM.FindByCredentials(
+                DBContent.Instance.Connexio, usuari, contrasenya);
+
+            if (usuariTrobat != null)
             {
-                conexion.Open();
+                mensaje.text = "Sessió iniciada correctament!";
+                Debug.Log("Usuari autenticat: " + usuariTrobat.Usuari);
 
-                string consulta = "SELECT * FROM Usuarios WHERE usuario=@usuario AND password=@password";
+                inventoryManager?.SetUsuarioActual(usuariTrobat.Usuari);
 
-                using (var comando = new SqliteCommand(consulta, conexion))
-                {
-                    comando.Parameters.AddWithValue("@usuario", usuario);
-                    comando.Parameters.AddWithValue("@password", contraseña);
-
-                    using (IDataReader reader = comando.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            mensaje.text = "Inicion sesiada";
-                            Debug.Log("Usuario autenticado: " + usuario);
-
-                            if (inventoryManager != null)
-                            {
-                                inventoryManager.SetUsuarioActual(usuario);
-                            }
-
-                            if (canvasPrincipal != null) canvasPrincipal.SetActive(true);
-                            if (canvasLogin != null) canvasLogin.SetActive(false);
-                        }
-                        else
-                        {
-                            mensaje.text = "wrong Usser or password";
-                        }
-                    }
-                }
+                canvasPrincipal?.SetActive(true);
+                canvasLogin?.SetActive(false);
+            }
+            else
+            {
+                mensaje.text = "Usuari o contrasenya incorrectes.";
             }
         }
         catch (System.Exception e)
         {
-            mensaje.text = "DB Error";
-            Debug.LogError("Error SQLite: " + e.Message);
+            mensaje.text = "Error de BD.";
+            Debug.LogError("Error ORM Login: " + e.Message);
         }
     }
 }
