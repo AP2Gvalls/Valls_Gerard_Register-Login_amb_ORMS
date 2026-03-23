@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,7 +11,9 @@ public class Slot : MonoBehaviour
     [Header("UI")]
     public Image iconImage;
     public TextMeshProUGUI itemNameText;
+    public InventoryManager inventoryManager;
     public Button deleteButton;
+    public WalletCurrency currency;
 
     [Header("Slot Info")]
     public int slotIndex;
@@ -123,18 +126,30 @@ public class Slot : MonoBehaviour
     // Método para eliminar el item del slot
     public void EliminarItem()
     {
-        if (currentItem != null)
+        //per si falla el sell/delete del item
+        try
         {
-            Debug.Log($"Eliminando {currentItem.ItemName} del slot {slotIndex}");
+            if (slotIndex == -1)
+                throw new InvalidOperationException("SlotIndex és -1, slot no inicialitzat.");
 
-            ClearSlot();
-
-            // Notificar al InventoryManager que hubo cambios
-            InventoryManager inventoryManager = FindObjectOfType<InventoryManager>();
-            if (inventoryManager != null)
+            if (currentItem != null)
             {
-                inventoryManager.OnInventoryChanged();
+                Debug.Log($"Eliminando {currentItem.ItemName} del slot {slotIndex}");
+
+                currency.Score(currentItem.value); 
+
+                ClearSlot();
+
+                InventoryManager inventoryManager = FindObjectOfType<InventoryManager>();
+                if (inventoryManager != null)
+                {
+                    inventoryManager.OnInventoryChanged(); //notifiquem dels canvis al manager inventari
+                }
             }
+        }
+        catch (InvalidOperationException ex)
+        {
+            Debug.LogError($"Error en EliminarItem: {ex.Message}");
         }
     }
 }

@@ -7,6 +7,7 @@ public class Item : ScriptableObject
     public string ItemID;
     public string ItemName;
     public Sprite ItemSprite; //sprite de item
+    public int value; //valor del item
 
     private void OnEnable()
     {

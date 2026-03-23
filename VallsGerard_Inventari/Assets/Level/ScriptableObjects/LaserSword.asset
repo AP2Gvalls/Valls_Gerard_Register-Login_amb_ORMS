@@ -15,3 +15,4 @@ MonoBehaviour:
   ItemID: 4395e0c0-87c7-4a65-9b45-0711d049534c
   ItemName: LaserSword
   ItemSprite: {fileID: 21300000, guid: ac959cfce169d7c4d8a6818250292d86, type: 3}
+  value: 7

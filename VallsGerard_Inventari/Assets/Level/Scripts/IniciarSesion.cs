@@ -49,7 +49,7 @@ public class IniciarSesion : MonoBehaviour
             return;
         }
 
-        try
+        try //pot ser que falli l'inici de sesio
         {
             UsuariORM usuariTrobat = UsuariORM.FindByCredentials(
                 DBContent.Instance.Connexio, usuari, contrasenya);
@@ -69,10 +69,10 @@ public class IniciarSesion : MonoBehaviour
                 mensaje.text = "Usuari o contrasenya incorrectes.";
             }
         }
-        catch (System.Exception e)
+        catch (System.Exception ex)
         {
             mensaje.text = "Error de BD.";
-            Debug.LogError("Error ORM Login: " + e.Message);
+            Debug.LogError("Error ORM Login: " + ex.Message);
         }
     }
 }

@@ -10,6 +10,7 @@ public class ItemSpawner : MonoBehaviour
 
     [Header("Referencias")]
     public InventoryManager inventoryManager;
+    public WalletCurrency currency;
     public Transform spawnPanel; // Slot on apareixeran els items
 
     [Header("Prefab")]
@@ -50,6 +51,7 @@ public class ItemSpawner : MonoBehaviour
     {
         if (inventoryManager != null)
         {
+            currency.Score(-item.value);
             bool añadido = inventoryManager.AñadirItem(item);
             if (añadido)
             {

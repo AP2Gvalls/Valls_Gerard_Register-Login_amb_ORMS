@@ -15,3 +15,4 @@ MonoBehaviour:
   ItemID: b0d09dda-220e-4227-b70d-dbf492b6478f
   ItemName: EnchantedBook
   ItemSprite: {fileID: 21300000, guid: 70a0b656c98c291479b036dcc5bfe0ab, type: 3}
+  value: 5
