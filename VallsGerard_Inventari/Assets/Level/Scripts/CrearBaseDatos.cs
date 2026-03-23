@@ -17,6 +17,7 @@ public class CrearBaseDatos : MonoBehaviour
     private void CreateDatabase()
     {
         string dbPath = Application.persistentDataPath + "/MyDatabase.sqlite";
+        Debug.Log(dbPath);
 
         if (borrarDatosAlIniciar && File.Exists(dbPath))
         {
@@ -40,7 +41,9 @@ public class CrearBaseDatos : MonoBehaviour
             "CREATE TABLE IF NOT EXISTS Usuarios (" +
             "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "usuario TEXT, " +
-            "password TEXT CHECK (length(password) >= 8))";
+            "password TEXT, " +
+            "wallet REAL DEFAULT 20" +
+            ")";
 
         dbCommandCreateTable.ExecuteNonQuery();
 

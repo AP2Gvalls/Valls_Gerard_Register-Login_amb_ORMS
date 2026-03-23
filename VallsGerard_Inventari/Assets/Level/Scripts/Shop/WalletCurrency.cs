@@ -12,12 +12,6 @@ public class WalletCurrency : MonoBehaviour
     public TextMeshProUGUI Score_txt;
     const string SAVEGAMEKEY_MONEY = "SavedMoney";
 
-    public void LoadMoney()
-    {
-        bank = PlayerPrefs.GetFloat(SAVEGAMEKEY_MONEY, 20);
-        UpdateUI();
-    }
-
 
 
 
@@ -37,11 +31,11 @@ public class WalletCurrency : MonoBehaviour
     public void SaveMoney(bool save = true)
     {
         PlayerPrefs.SetFloat(SAVEGAMEKEY_MONEY, bank);
+        if (save) PlayerPrefs.Save();
 
-        if (save)
-        {
-            PlayerPrefs.Save();
-        }
+        // Guardar a la BD
+        if (DBContent.Instance != null && !string.IsNullOrEmpty(usuariActual))
+            UsuariORM.UpdateWallet(DBContent.Instance.Connexio, usuariActual, bank);
     }
 
 
@@ -64,6 +58,32 @@ public class WalletCurrency : MonoBehaviour
         bank += points;
         SaveMoney();
         UpdateUI();
+    }
+
+    public void LoadMoney()
+    {
+        //carregar la Db o base de dades o taula com li vulguis dur
+        if (DBContent.Instance != null && !string.IsNullOrEmpty(usuariActual))
+        {
+            float? walletBD = UsuariORM.GetWallet(DBContent.Instance.Connexio, usuariActual);
+            if (walletBD.HasValue)
+            {
+                bank = walletBD.Value;
+                UpdateUI();
+                return;
+            }
+        }
+        // Fallback a PlayerPrefs
+        bank = PlayerPrefs.GetFloat(SAVEGAMEKEY_MONEY, 20);
+        UpdateUI();
+    }
+
+    // Afegir camp i setter
+    private string usuariActual = "";
+    public void SetUsuari(string nom)
+    {
+        usuariActual = nom;
+        LoadMoney(); // recarregar amb les dades d'aquest usuari
     }
 
     void UpdateUI()

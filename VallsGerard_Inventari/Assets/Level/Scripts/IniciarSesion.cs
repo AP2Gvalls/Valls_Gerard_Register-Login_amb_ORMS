@@ -59,7 +59,9 @@ public class IniciarSesion : MonoBehaviour
                 mensaje.text = "Sessió iniciada correctament!";
                 Debug.Log("Usuari autenticat: " + usuariTrobat.Usuari);
 
-                inventoryManager?.SetUsuarioActual(usuariTrobat.Usuari);
+                inventoryManager?.SetUsuarioActual(usuariTrobat.Usuari);// la info o contingut del inventari
+                WalletCurrency.instance?.SetUsuari(usuariTrobat.Usuari);// la pasta
+
 
                 canvasPrincipal?.SetActive(true);
                 canvasLogin?.SetActive(false);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -108,6 +109,23 @@ public class UsuariORM : MonoBehaviour
         }
     }
 
+    public static void UpdateWallet(IDbConnection connexio, string usuari, float wallet)
+    {
+        using var cmd = connexio.CreateCommand();
+        cmd.CommandText = "UPDATE Usuarios SET wallet = @wallet WHERE usuario = @usuari"; //same
+        var p1 = cmd.CreateParameter(); p1.ParameterName = "@wallet"; p1.Value = wallet; cmd.Parameters.Add(p1);
+        var p2 = cmd.CreateParameter(); p2.ParameterName = "@usuari"; p2.Value = usuari; cmd.Parameters.Add(p2);
+        cmd.ExecuteNonQuery();
+    }
+
+    public static float? GetWallet(IDbConnection connexio, string usuari)
+    {
+        using var cmd = connexio.CreateCommand();
+        cmd.CommandText = "SELECT wallet FROM Usuarios WHERE usuario = @usuari"; //coandos o com li vulgis dir de la bd
+        var p1 = cmd.CreateParameter(); p1.ParameterName = "@usuari"; p1.Value = usuari; cmd.Parameters.Add(p1);
+        var result = cmd.ExecuteScalar();
+        return result != null ? Convert.ToSingle(result) : (float?)null;
+    }
 
     private static void EnsureOpen(IDbConnection conn)
     {
